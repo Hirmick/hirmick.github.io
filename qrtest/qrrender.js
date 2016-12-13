@@ -137,7 +137,7 @@ function draw(code) {
                 
                 // Wenn die Kante neu ist, Pfad hinzufügen
                 if( (inside && (border[j][i]&1)==0) || (!inside && (border[j][i-1]&2)==0) ) {
-                    var turtle = new Turtle(code,border,inside?i:(i-1),j,!inside);
+                    var turtle = new Turtle(code,border,inside?i:(i-1),j,inside);
                     turtle.go();
                     if(!count) ctx.beginPath();
                     turtle.render(ctx,500,500);
