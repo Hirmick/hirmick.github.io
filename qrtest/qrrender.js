@@ -122,7 +122,7 @@ function setup() {
     main();
 }
 
-function main(value=null) {
+function main(value) {
     code = qrCode(20,value);
     
     draw(code);
