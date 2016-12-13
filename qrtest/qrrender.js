@@ -90,11 +90,7 @@ function Turtle(code,used,x,y,dir=true) {
         var scaleY = (height-100)/size;
         
         ctx.moveTo(50+this.path[0].x*scaleX,50+this.path[0].y*scaleY);
-        if(inverse) {
-            for(var i=this.path.length-2;i>0;--i) ctx.lineTo(50+this.path[i].x*scaleX,50+this.path[i].y*scaleY);
-        } else {
-            for(var i=1;i<this.path.length-1;++i) ctx.lineTo(50+this.path[i].x*scaleX,50+this.path[i].y*scaleY);
-        }
+        for(var i=1;i<this.path.length-1;++i) ctx.lineTo(50+this.path[i].x*scaleX,50+this.path[i].y*scaleY);
         ctx.closePath();
     }
 }
