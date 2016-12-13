@@ -27,6 +27,39 @@ function create2dBoolArray(width,height) {
 }
 
 // dir: 0=right,1=down,2=left,3=up
+/* Erzeugt einen Pfad beginnend bei Gitterpunkt (x,y) in Richtung <dir>, der einen
+ * schwarzen Bereich math. negativ umläuft. Alle vertikalen Kanten werden im
+ * 2D-Array <vEdges> mit <true> markiert.
+ *
+ * Bemerkung: Der Pfad selbst ist nicht notwendigerweise im Uhrzeigersinn. Aufgefasst
+ *   als Rand des schwarzen Bereiches ist er aber stets mathematisch negativ orientiert
+ *   (also Uhrzeigersinn). Wenn er ein "Loch" beschreibt, ist er für sich allein
+ *   genommen gegen den Uhrzeigersinn orientiert.
+ * 
+ * Beim Aufruf folgendes beachten:
+ *  (1) <dir> muss bereits in die richtige Richtung zeigen, d.h. es muss gelten:
+ *        a) Das Modul in Fahrtrichtung links muss weiß sein oder außerhalb des Rasters
+ *        b) Das Modul in Fahrtrichtung rechts muss schwarz sein
+ *      ["Fahrtrichtung" ist <dir>]. Grund ist, dass in Fahrtrichtung rechts das
+ *      Innere und links das Äußere des Pfades liegt
+ *  (2) Der Pfad darf (x,y) nicht vorzeitig erreichen. Äquivalent dazu ist, dass
+ *      bei dem Gitterpunkt (x,y) nicht alle vier Kanten gleichzeitig zu dem gesuchten
+ *      Pfad gehören. Ein hinreichendes Kriterium dafür ist: x oder y sei minimal oder
+ *      maximal.Wir könnten auf diese Einschränkung verzichten, indem wir das Abbruch-
+ *      kriterium ersetzen durch "x==x0 && y==y0 && dir==dir0". Wir haben darauf
+ *      verzichtet, da wir diese Einschränkung automatisch einhalten.
+ *  (3) (x,y) sollte ein Eckpunkt des Pfades sein. Wenn diese Bedingung verletzt ist,
+ *      ist der resultierende Pfad nicht optimal in dem Sinne, dass (x,y) explizit
+ *      im Pfad auftaucht, obwohl es kein Eckpunkt ist.
+ *
+ * Wir rufen die Funktion innerhalb von "draw" auf. Dort rastern wir zeilenweise jeweils
+ * von links nach rechts ab und beginnen daher jeden Pfad mit seiner ersten oberen linken
+ * Ecke. Damit sind die letzten beiden Bedingungen automatisch erfüllt. Die erste
+ * Bedingung erfüllen wir dadurch, dass wir als Richtung stets 0 (rechts) oder 1 (unten)
+ * übergeben, was bei einem Eckpunkt oben links immer richtig ist. "rechts" führt zu
+ * Pfaden im Uhrzeigersinn, beschreibt also einen Pfad mit Inhalt. "unten" führt dagegen
+ * zu Pfaden gegen den Uhrzeigersinn und beschreiben damit "Löcher".
+ */
 function createPath(code,vEdges,x,y,dir) {
     var x0 = x;
     var y0 = y;
