@@ -26,41 +26,29 @@ function create2dBoolArray(width,height) {
     return array;
 }
 
-// dir: 0=right,1=down,2=left,3=up
-/* Erzeugt einen Pfad beginnend bei Gitterpunkt (x,y) in Richtung <dir>, der einen
- * schwarzen Bereich math. negativ umläuft. Alle vertikalen Kanten werden im
- * 2D-Array <vEdges> mit <true> markiert.
+/* Erzeugt einen Pfad beginnend bei Gitterpunkt (x,y), der einen schwarzen Bereich math.
+ * negativ umläuft. Alle vertikalen Kanten werden im 2D-Array <vEdges> mit <true> markiert.
  *
- * Bemerkung: Der Pfad selbst ist nicht notwendigerweise im Uhrzeigersinn. Aufgefasst
- *   als Rand des schwarzen Bereiches ist er aber stets mathematisch negativ orientiert
- *   (also Uhrzeigersinn). Wenn er ein "Loch" beschreibt, ist er für sich allein
- *   genommen gegen den Uhrzeigersinn orientiert.
+ * Bemerkung: Der Pfad selbst ist nicht notwendigerweise im Uhrzeigersinn. Schwarze
+ *   Bereiche sind mathematisch negativ orientiert und der Pfad bekommt - als Rand
+ *   aufgefasst - die induzierte Orientierung. Je nachdem, ob der schwarze Bereich innen
+ *   oder außen vom Pfad liegt, ist dieser im oder gegen den Uhrzeigersinn orientiert.
  * 
- * Beim Aufruf folgendes beachten:
- *  (1) <dir> muss bereits in die richtige Richtung zeigen, d.h. es muss gelten:
- *        a) Das Modul in Fahrtrichtung links muss weiß sein oder außerhalb des Rasters
- *        b) Das Modul in Fahrtrichtung rechts muss schwarz sein
- *      ["Fahrtrichtung" ist <dir>]. Grund ist, dass in Fahrtrichtung rechts das
- *      Innere und links das Äußere des Pfades liegt
- *  (2) Der Pfad darf (x,y) nicht vorzeitig erreichen. Äquivalent dazu ist, dass
- *      bei dem Gitterpunkt (x,y) nicht alle vier Kanten gleichzeitig zu dem gesuchten
- *      Pfad gehören. Ein hinreichendes Kriterium dafür ist: x oder y sei minimal oder
- *      maximal.Wir könnten auf diese Einschränkung verzichten, indem wir das Abbruch-
- *      kriterium ersetzen durch "x==x0 && y==y0 && dir==dir0". Wir haben darauf
- *      verzichtet, da wir diese Einschränkung automatisch einhalten.
- *  (3) (x,y) sollte ein Eckpunkt des Pfades sein. Wenn diese Bedingung verletzt ist,
- *      ist der resultierende Pfad nicht optimal in dem Sinne, dass (x,y) explizit
- *      im Pfad auftaucht, obwohl es kein Eckpunkt ist.
- *
+ * Es gelten folgende Einschränkungen an (x,y):
+ *   (1) Der Gitterpunkt (x,y) muss eine obere Ecke sein. Das ist äquivalent dazu, dass
+ *       durch (x,y) eine Kante nach unten sowie eine Kante nach rechts geht.
+ *   (2) Falls weitere Kanten durch (x,y) gehen, dürfen diese nicht zum selben Pfad
+ *       gehören wie die beiden ersten, d.h. (x,y) darf kein Berührungspunkt des Pfades
+ *       mit sich selbst sein. Dies ist äquivalent dazu, dass das Modul oben links von
+ *       (x,y) entweder nicht existiert, weiß ist oder zu einem anderen Pfad gehört.
+ * 
  * Wir rufen die Funktion innerhalb von "draw" auf. Dort rastern wir zeilenweise jeweils
  * von links nach rechts ab und beginnen daher jeden Pfad mit seiner ersten oberen linken
- * Ecke. Damit sind die letzten beiden Bedingungen automatisch erfüllt. Die erste
- * Bedingung erfüllen wir dadurch, dass wir als Richtung stets 0 (rechts) oder 1 (unten)
- * übergeben, was bei einem Eckpunkt oben links immer richtig ist. "rechts" führt zu
- * Pfaden im Uhrzeigersinn, beschreibt also einen Pfad mit Inhalt. "unten" führt dagegen
- * zu Pfaden gegen den Uhrzeigersinn und beschreiben damit "Löcher".
+ * Ecke. Bedingung (1) ist also trivialerweise erfüllt. Bedingung (2) folgt, da (x,y)
+ * in der ersten Zeile des Pfades liegt und über (x,y) insbesondere keine gefüllten Module
+ * desselben Pfades liegen können.
  */
-function createPath(code,vEdges,x,y,dir) {
+function createPath(code,vEdges,x,y) {
     var x0 = x;
     var y0 = y;
     
@@ -70,6 +58,14 @@ function createPath(code,vEdges,x,y,dir) {
         return i>=0 && j>=0 && i<size && j<size && code[j][i];
     }
     
+    var hole = !ok(x,y); // beschreibt der Pfad ein Loch ?
+    if(ok(x-1,y)!=ok(x-1,y-1) || ok(x-1,y-1)!=ok(x,y-1) || ok(x,y-1)==hole) {
+        throw "Invalid arguments: Keine (echte) obere Ecke";
+    }
+    
+    // dir: 0=right,1=down,2=left,3=up
+    var dir = hole?1:0; // Bei Löchern nach unten, sonst nach rechts
+
     var path = [new Point(x,y)];
     var __dx = [1,0,-1,0];
     var __dy = [0,1,0,-1];
@@ -132,7 +128,7 @@ function draw(code) {
                 
                 // Wenn die Kante neu ist, Pfad hinzufügen
                 if( !vEdges[j][i] ) {
-                    var path = createPath(code,vEdges,i,j,inside?0:1);
+                    var path = createPath(code,vEdges,i,j);
                     if(!count) ctx.beginPath();
                     renderPath(ctx,500,500,size,path);
                     ++count;
