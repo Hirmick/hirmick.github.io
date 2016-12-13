@@ -32,7 +32,7 @@ function Turtle(code,used,x,y,dir=true) {
     var y0 = y;
     
     var dx = dir?1:0;
-    var dy = dir?0:-1;
+    var dy = dir?0:1;
     
     var dx0 = dx;
     var dy0 = dy;
