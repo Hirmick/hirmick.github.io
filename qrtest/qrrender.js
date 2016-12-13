@@ -109,7 +109,7 @@ function draw(code) {
     }
     
     if(count>0) {
-        ctx.fill("nonzero");
+        ctx.fill();
         ctx.stroke();
     }
 }
