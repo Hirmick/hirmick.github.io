@@ -4,11 +4,19 @@ function Point(x,y) {
 }
 
 function qrCode(size,value) {
+    if(value!=null && value.isDark) size = value.getModuleCount();
+
     var array = new Array(size);
     for(var j=0;j<size;++j) {
         var row = new Array(size);
         for(var i=0;i<size;++i) {
-            if(value===null) row[i] = Math.random()<0.5; else row[i] = value;
+            if(value===null) {
+                row[i] = Math.random()<0.5;
+            } else if(value.isDark) {
+                row[i] = value.isDark(j,i);
+            } else {
+                row[i] = value;
+            }
         }
         array[j] = row;
     }
@@ -150,6 +158,21 @@ function main(value) {
     code = qrCode(20,value);
     
     draw(code);
+}
+
+function qrMain() {
+    var text = document.getElementById("textinput").value;
+    
+    try {
+       var qr = qrcode(1,'L');
+       qr.addData(text);
+       qr.make();
+    } catch(err) {
+        alert("Fehler beim Erstellen des QR-Codes. Vermutlich ist der Eingabetext zu lang oder falsch kodiert");
+        return;
+    }
+    
+    main(qr);
 }
 
 function canvasMouseDown(ev) {

@@ -1,9 +1,20 @@
 <html>
     <head>
+        <script src="qrcode.js"></script>
         <script src="qrrender.js"></script>
+        
+        <style>
+            body {
+                text-align: center;
+            }
+            
+            canvas {
+                background-color: white;
+            }
+        </style>
     </head>
     
-    <body onLoad="setup()" style="text-align: center">
+    <body onLoad="setup()">
         <div style="margin-top: 2em">Klicken zum Bearbeiten</div>
         <canvas id="canvas" width="500" height="500">
         </canvas>
@@ -11,6 +22,10 @@
             <button onclick="main(false)">Leer</button>
             <button onclick="main(null)">Zufallsmuster</button>
             <button onclick="main(true)">Voll</button>
+        </div>
+        <div style="margin-top: 0.5ex">
+            <input type="text" value="Hallo" id="textinput" onkeyup="if(event.keyCode==13) qrMain()"/>
+            <button onclick="qrMain()" default>QR-Code</button>
         </div>
     </body>
 </html>
