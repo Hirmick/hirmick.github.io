@@ -59,6 +59,7 @@ function createPath(code,vEdges,x,y) {
     
     // dir: 0=right,1=down,2=left,3=up
     var dir = hole?1:0; // Bei Löchern nach unten, sonst nach rechts
+    var dir0 = dir;
 
     var path = [new Point(x,y)];
     var __dx = [1,0,-1,0];
@@ -84,7 +85,7 @@ function createPath(code,vEdges,x,y) {
         } else continue; // Kein Knick --> Pfad muss noch nicht angepasst werden
         // Pfad anpassen
         path.push(new Point(x,y));
-    } while(x != x0 || y != y0);
+    } while(x != x0 || y != y0 || dir!=dir0);
     
     return path;
 }
