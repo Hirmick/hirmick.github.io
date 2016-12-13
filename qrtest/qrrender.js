@@ -16,18 +16,18 @@ function qrCode(size,value=null) {
     return array;
 }
 
-function createNullArray(size) {
-    var array = new Array(size);
-    for(var j=0;j<size;++j) {
-        var row = new Array(size);
-        for(var i=0;i<size;++i) row[i] = 0;
+function create2dBoolArray(width,height) {
+    var array = new Array(height);
+    for(var j=0;j<height;++j) {
+        var row = new Array(width);
+        for(var i=0;i<width;++i) row[i] = false;
         array[j] = row;
     }
     return array;
 }
 
 // dir: true=right; false=down
-function Turtle(code,used,x,y,dir=true) {
+function Turtle(code,vEdges,x,y,dir=true) {
     var x0 = x;
     var y0 = y;
     
@@ -59,8 +59,8 @@ function Turtle(code,used,x,y,dir=true) {
     
     this.step = function() {
     
-        if(dy<0) used[y][x] |= 1; // linke Kante
-        if(dy>0) used[y][x] |= 2; // rechte Kante
+        if(dy<0) vEdges[y][x] = true;   // linke Kante
+        if(dy>0) vEdges[y][x+1] = true; // rechte Kante
 
         if(!ok(x+dx,y+dy)) {
             // Sackgasse. Im Uhrzeigersinn drehen (auf der Stelle bleiben)
@@ -115,7 +115,7 @@ function logBorder(border) {
 
 function draw(code) {
     var size = code.length
-    var border = createNullArray(code.length);
+    var vEdges = create2dBoolArray(code.length+1,code.length);
 
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -136,8 +136,8 @@ function draw(code) {
                 inside = !inside;
                 
                 // Wenn die Kante neu ist, Pfad hinzufügen
-                if( (inside && (border[j][i]&1)==0) || (!inside && (border[j][i-1]&2)==0) ) {
-                    var turtle = new Turtle(code,border,inside?i:(i-1),j,inside);
+                if( !vEdges[j][i] ) {
+                    var turtle = new Turtle(code,vEdges,inside?i:(i-1),j,inside);
                     turtle.go();
                     if(!count) ctx.beginPath();
                     turtle.render(ctx,500,500);
