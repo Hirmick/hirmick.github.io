@@ -91,7 +91,7 @@ function draw(code) {
     var count = 0;
     for(var j=0;j<size;++j) {
         var inside = false;
-        for(var i=0;i<size;++i) {code,vEdges,
+        for(var i=0;i<size;++i) {
             var c = code[j][i];
             if(inside != c) {
                 // Vertikale Kante gefunden
