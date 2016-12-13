@@ -26,19 +26,23 @@ function createNullArray(size) {
     return array;
 }
 
-function Turtle(code,used,x,y,inverse=false) {
+// dir: true=right; false=down
+function Turtle(code,used,x,y,dir=true) {
     var x0 = x;
     var y0 = y;
     
-    var dx = 1;
-    var dy = 0;
+    var dx = dir?1:0;
+    var dy = dir?0:-1;
+    
+    var dx0 = dx;
+    var dy0 = dy;
     
     var size = code.length;
     
     this.path = [new Point(x,y)]; // Dies ist der Punkt unten links der Kröte
     
     function ok(x,y) {
-        return x>=0 && y>=0 && x<size && y<size && (code[y][x]^inverse);
+        return x>=0 && y>=0 && x<size && y<size && code[y][x];
     }
     
     function turnLeft() {
@@ -55,13 +59,9 @@ function Turtle(code,used,x,y,inverse=false) {
     
     this.step = function() {
     
-        if(inverse) {
-            if(dy<0) used[y][x-1] |= 2;
-            if(dy>0) used[y][x+1] |= 1;
-        } else {
-            if(dy<0) used[y][x] |= 1; // linke Kante
-            if(dy>0) used[y][x] |= 2; // rechte Kante
-        }
+        if(dy<0) used[y][x] |= 1; // linke Kante
+        if(dy>0) used[y][x] |= 2; // rechte Kante
+
         if(!ok(x+dx,y+dy)) {
             // Sackgasse. Im Uhrzeigersinn drehen (auf der Stelle bleiben)
             turnRight();
@@ -78,7 +78,7 @@ function Turtle(code,used,x,y,inverse=false) {
             this.path.push(new Point(x+(1-dx+dy)/2,y+(1-dx-dy)/2));
         }
         
-        return x==x0 && y==y0 && dx==1; // Wieder bei Startposition ?
+        return x==x0 && y==y0 && dx==dx0 && dy==dy0; // Wieder bei Startposition ?
     }
     
     this.go = function() {
@@ -145,7 +145,7 @@ function draw(code) {
                 
                 } else {
                 
-                    var turtle = new Turtle(code,border,i,j,true);
+                    var turtle = new Turtle(code,border,i-1,j,false);
                     turtle.go();
                     if(!count) ctx.beginPath();
                     turtle.render(ctx,500,500);
