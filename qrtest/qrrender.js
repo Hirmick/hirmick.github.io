@@ -119,7 +119,7 @@ code = null;
 function setup() {
     var canvas = document.getElementById("canvas");
     canvas.onmousedown = canvasMouseDown;
-    main();
+    main(null);
 }
 
 function main(value) {
