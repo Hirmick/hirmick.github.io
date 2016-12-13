@@ -130,51 +130,20 @@ function draw(code) {
     for(var j=0;j<size;++j) {
         var inside = false;
         for(var i=0;i<size;++i) {
-        
             var c = code[j][i];
-            var b = border[j][i];
-            if(inside) {
+            if(inside != c) {
+                // Vertikale Kante gefunden
+                inside = !inside;
                 
-                if(c) {
-                
-                    if( (b&2) != 0) inside = false;
-                
-                } else {
-                
-                    var turtle = new Turtle(code,border,i-1,j,false);
+                // Wenn die Kante neu ist, Pfad hinzufügen
+                if( (inside && (border[j][i]&1)==0) || (!inside && (border[j][i-1]&2)==0) ) {
+                    var turtle = new Turtle(code,border,inside?i:(i-1),j,!inside);
                     turtle.go();
                     if(!count) ctx.beginPath();
                     turtle.render(ctx,500,500);
-                    if((border[j][i-1] & 2) != 0) {
-                        inside = false;
-                    }
-
                     ++count;
-                
                 }
-                
-            } else {
-                
-                if(c) {
-                    
-                    if(b==1) {
-                        inside = true;
-                    } else if(b==0) {
-                        var turtle = new Turtle(code,border,i,j);
-                        turtle.go();
-                        if(!count) ctx.beginPath();
-                        turtle.render(ctx,500,500);
-                        if(border[j][i] == 1) {
-                            inside = true;
-                        }
-                        
-                        ++count;
-                    }
-                    
-                }
-                
             }
-        
         }
     }
     
