@@ -26,6 +26,55 @@ function create2dBoolArray(width,height) {
     return array;
 }
 
+// dir: 0=right,1=down,2=left,3=up
+function createPath(code,vEdges,x,y,dir) {
+    var x0 = x;
+    var y0 = y;
+    
+    var size = code.length;
+    
+    function ok(i,j) {
+        return i>=0 && j>=0 && i<size && j<size && code[j][i];
+    }
+    
+    var path = [new Point(x,y)];
+    var __dx = [1,0,-1,0];
+    var __dy = [0,1,0,-1];
+
+    do {
+        // Richtungvektor bestimmen und ggf vertikale Kante markieren
+        var dx = __dx[dir];
+        var dy = __dy[dir];
+        if(dy<0) vEdges[y-1][x] = true;
+        if(dy>0) vEdges[y][x] = true;
+        // Einen Schritt bewegen
+        x += dx;
+        y += dy;
+        // Modul bestimmen (Fahrtrichtung rechts)
+        var i = x+(dx-dy-1)/2;
+        var j = y+(dx+dy-1)/2;
+        // Ggf abbiegen
+        if(!ok(i,j)) {
+            dir = (dir+1)&3; // Im Uhrzeigersinn drehen
+        } else if(ok(i+dy,j-dx)) {
+            dir = (dir+3)&3; // Gegen den Uhrzeigersinn drehen
+        } else continue; // Kein Knick --> Pfad muss noch nicht angepasst werden
+        // Pfad anpassen
+        path.push(new Point(x,y));
+    } while(x != x0 || y != y0);
+    
+    return path;
+}
+
+function renderPath(ctx,width,size,height,path) {
+    var scaleX = (width-100)/size;
+    var scaleY = (height-100)/size;
+
+    ctx.moveTo(50+path[0].x*scaleX,50+path[0].y*scaleY);
+    for(var i=1;i<path.length-1;++i) ctx.lineTo(50+path[i].x*scaleX,50+path[i].y*scaleY);
+    ctx.closePath();
+}
+
 // dir: true=right; false=down
 function Turtle(code,vEdges,x,y,dir=true) {
     var x0 = x;
