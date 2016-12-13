@@ -46,7 +46,7 @@ function create2dBoolArray(width,height) {
  *   Der Gitterpunkt (x,y) muss eine obere Ecke sein. Das ist äquivalent dazu, dass
  *   durch (x,y) eine Kante nach unten sowie eine Kante nach rechts geht.
  * 
- * Wir rufen die Funktion innerhalb von "draw" auf. Dort rastern wir zeilenweise jeweils
+ * Wir rufen die Funktion innerhalb von "outline" auf. Dort rastern wir zeilenweise jeweils
  * von links nach rechts ab und beginnen daher jeden Pfad mit seiner ersten oberen linken
  * Ecke. Die Bedingung ist also trivialerweise erfüllt.
  */
@@ -98,29 +98,43 @@ function createPath(code,vEdges,x,y) {
     return path;
 }
 
-function renderPath(ctx,width,height,size,path) {
+function renderCanvas(ctx,width,height,size,pathArray) {
+    if(pathArray.length==0) return;
+    
     var scaleX = (width-100)/size;
     var scaleY = (height-100)/size;
 
-    ctx.moveTo(50+path[0].x*scaleX,50+path[0].y*scaleY);
-    for(var i=1;i<path.length-1;++i) ctx.lineTo(50+path[i].x*scaleX,50+path[i].y*scaleY);
-    ctx.closePath();
+    ctx.beginPath();
+    for(var pid=0;pid<pathArray.length;++pid) {
+        var path = pathArray[pid];
+        ctx.moveTo(50+path[0].x*scaleX,50+path[0].y*scaleY);
+        for(var i=1;i<path.length-1;++i) ctx.lineTo(50+path[i].x*scaleX,50+path[i].y*scaleY);
+        ctx.closePath();
+    }
+    ctx.fill();
+    ctx.stroke();
 }
 
-function draw(code) {
+function renderPDF(doc,x,y,width,height,size,pathArray) {
+    if(pathArray.length==0) return;
+    
+    var scaleX = width/size;
+    var scaleY = height/size;
+
+    for(var pid=0;pid<pathArray.length;++pid) {
+        var path = pathArray[pid];
+        doc.moveTo(x+path[0].x*scaleX,y+path[0].y*scaleY);
+        for(var i=1;i<path.length-1;++i) doc.lineTo(x+path[i].x*scaleX,y+path[i].y*scaleY);
+    }
+    doc.fill();
+}
+
+function outline(code) {
     var size = code.length
     var vEdges = create2dBoolArray(code.length+1,code.length);
 
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    ctx.fillStyle = "rgb(102, 204, 0)";
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgb(0, 50, 200)";
+    result = [];
 
-    var count = 0;
     for(var j=0;j<size;++j) {
         var inside = false;
         for(var i=0;i<size;++i) {
@@ -130,20 +144,27 @@ function draw(code) {
                 inside = !inside;
                 
                 // Wenn die Kante neu ist, Pfad hinzufügen
-                if( !vEdges[j][i] ) {
-                    var path = createPath(code,vEdges,i,j);
-                    if(!count) ctx.beginPath();
-                    renderPath(ctx,500,500,size,path);
-                    ++count;
-                }
+                if( !vEdges[j][i] ) result.push(createPath(code,vEdges,i,j));
             }
         }
     }
     
-    if(count>0) {
-        ctx.fill();
-        ctx.stroke();
-    }
+    return result;
+}
+
+function draw(code) {
+    var pathArray = outline(code);
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = "rgb(102, 204, 0)";
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgb(0, 50, 200)";
+    
+    renderCanvas(ctx,canvas.width,canvas.height,code.length,pathArray);
 }
 
 code = null;
@@ -188,4 +209,23 @@ function canvasMouseDown(ev) {
     
     code[y][x] = !code[y][x];
     draw(code);
+}
+
+function makePdf() {
+    var doc = new PDFDocument();
+    
+    var pathArray = outline(code);
+    renderPDF(doc,100,100,28,28,code.length,pathArray);
+    
+    var stream = doc.pipe(blobStream());
+    
+    doc.end();
+    stream.on('finish',function() {
+        var blob = stream.toBlob("application/pdf");
+        var reader = new window.FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function() {
+            window.open(reader.result);
+        }
+    });
 }

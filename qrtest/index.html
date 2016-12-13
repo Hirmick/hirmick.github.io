@@ -1,6 +1,8 @@
 <html>
     <head>
         <script src="qrcode.js"></script>
+        <script src="blob-stream.js"></script>
+        <script src="pdfkit.js"></script>
         <script src="qrrender.js"></script>
         
         <style>
@@ -26,6 +28,9 @@
         <div style="margin-top: 0.5ex">
             <input type="text" value="Hallo" id="textinput" onkeyup="if(event.keyCode==13) qrMain()"/>
             <button onclick="qrMain()" default>QR-Code</button>
+        </div>
+        <div style="margin-top: 0.5ex">
+            <button onclick="makePdf()">PDF</button>
         </div>
     </body>
 </html>
