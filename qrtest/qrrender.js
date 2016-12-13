@@ -66,7 +66,7 @@ function createPath(code,vEdges,x,y,dir) {
     return path;
 }
 
-function renderPath(ctx,width,size,height,path) {
+function renderPath(ctx,width,height,size,path) {
     var scaleX = (width-100)/size;
     var scaleY = (height-100)/size;
 
