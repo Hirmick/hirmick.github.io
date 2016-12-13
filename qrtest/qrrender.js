@@ -3,7 +3,7 @@ function Point(x,y) {
     this.y = y;
 }
 
-function qrCode(size,value=null) {
+function qrCode(size,value) {
     var array = new Array(size);
     for(var j=0;j<size;++j) {
         var row = new Array(size);
