@@ -39,7 +39,7 @@ function Turtle(code,used,x,y,dir=true) {
     
     var size = code.length;
     
-    this.path = [new Point(x+dir?0:1,y)]; // Dies ist der Punkt unten links der Kröte
+    this.path = [new Point(x+(dir?0:1),y)]; // Dies ist der Punkt unten links der Kröte
     
     function ok(x,y) {
         return x>=0 && y>=0 && x<size && y<size && code[y][x];
