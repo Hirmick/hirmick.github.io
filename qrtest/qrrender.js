@@ -75,93 +75,6 @@ function renderPath(ctx,width,size,height,path) {
     ctx.closePath();
 }
 
-// dir: true=right; false=down
-function Turtle(code,vEdges,x,y,dir=true) {
-    var x0 = x;
-    var y0 = y;
-    
-    var dx = dir?1:0;
-    var dy = dir?0:1;
-    
-    var dx0 = dx;
-    var dy0 = dy;
-    
-    var size = code.length;
-    
-    this.path = [new Point(x+(dir?0:1),y)]; // Dies ist der Punkt unten links der Kröte
-    
-    function ok(x,y) {
-        return x>=0 && y>=0 && x<size && y<size && code[y][x];
-    }
-    
-    function turnLeft() {
-        var h = dx;
-        dx = dy;
-        dy = -h;
-    }
-    
-    function turnRight() {
-        var h = dx;
-        dx = -dy;
-        dy = h;
-    }
-    
-    this.step = function() {
-    
-        if(dy<0) vEdges[y][x] = true;   // linke Kante
-        if(dy>0) vEdges[y][x+1] = true; // rechte Kante
-
-        if(!ok(x+dx,y+dy)) {
-            // Sackgasse. Im Uhrzeigersinn drehen (auf der Stelle bleiben)
-            turnRight();
-            this.path.push(new Point(x+(1-dx+dy)/2,y+(1-dx-dy)/2));
-        } else if(!ok(x+dx+dy,y-dx+dy)) {
-            // Geradeaus.
-            x += dx;
-            y += dy;
-        } else {
-            // Wir können nach links abbiegen
-            x += dx+dy;
-            y += dy-dx;
-            turnLeft();
-            this.path.push(new Point(x+(1-dx+dy)/2,y+(1-dx-dy)/2));
-        }
-        
-        return x==x0 && y==y0 && dx==dx0 && dy==dy0; // Wieder bei Startposition ?
-    }
-    
-    this.go = function() {
-        while(!this.step());
-    }
-    
-    this.render = function(ctx,width,height) {
-        var scaleX = (width-100)/size;
-        var scaleY = (height-100)/size;
-        
-        ctx.moveTo(50+this.path[0].x*scaleX,50+this.path[0].y*scaleY);
-        for(var i=1;i<this.path.length-1;++i) ctx.lineTo(50+this.path[i].x*scaleX,50+this.path[i].y*scaleY);
-        ctx.closePath();
-    }
-}
-
-function logBorder(border) {
-    console.log("====");
-    for(var j=0;j<border.length;++j) {
-        var row = border[j];
-        var str = "";
-        for(var i=0;i<row.length;++i) {
-            switch(row[i]) {
-                case 0: str += ' ';break;
-                case 1: str += '<';break;
-                case 2: str += '>';break;
-                case 3: str += 'x';break;
-                default: str+='!';
-            }
-        }
-        console.log(str);
-    }
-}
-
 function draw(code) {
     var size = code.length
     var vEdges = create2dBoolArray(code.length+1,code.length);
@@ -178,7 +91,7 @@ function draw(code) {
     var count = 0;
     for(var j=0;j<size;++j) {
         var inside = false;
-        for(var i=0;i<size;++i) {
+        for(var i=0;i<size;++i) {code,vEdges,
             var c = code[j][i];
             if(inside != c) {
                 // Vertikale Kante gefunden
@@ -186,10 +99,9 @@ function draw(code) {
                 
                 // Wenn die Kante neu ist, Pfad hinzufügen
                 if( !vEdges[j][i] ) {
-                    var turtle = new Turtle(code,vEdges,inside?i:(i-1),j,inside);
-                    turtle.go();
+                    var path = createPath(code,vEdges,i,j,inside?0:1);
                     if(!count) ctx.beginPath();
-                    turtle.render(ctx,500,500);
+                    renderPath(ctx,500,500,size,path);
                     ++count;
                 }
             }
