@@ -34,19 +34,13 @@ function create2dBoolArray(width,height) {
  *   aufgefasst - die induzierte Orientierung. Je nachdem, ob der schwarze Bereich innen
  *   oder außen vom Pfad liegt, ist dieser im oder gegen den Uhrzeigersinn orientiert.
  * 
- * Es gelten folgende Einschränkungen an (x,y):
- *   (1) Der Gitterpunkt (x,y) muss eine obere Ecke sein. Das ist äquivalent dazu, dass
- *       durch (x,y) eine Kante nach unten sowie eine Kante nach rechts geht.
- *   (2) Falls weitere Kanten durch (x,y) gehen, dürfen diese nicht zum selben Pfad
- *       gehören wie die beiden ersten, d.h. (x,y) darf kein Berührungspunkt des Pfades
- *       mit sich selbst sein. Dies ist äquivalent dazu, dass das Modul oben links von
- *       (x,y) entweder nicht existiert, weiß ist oder zu einem anderen Pfad gehört.
+ * Einschränkung:
+ *   Der Gitterpunkt (x,y) muss eine obere Ecke sein. Das ist äquivalent dazu, dass
+ *   durch (x,y) eine Kante nach unten sowie eine Kante nach rechts geht.
  * 
  * Wir rufen die Funktion innerhalb von "draw" auf. Dort rastern wir zeilenweise jeweils
  * von links nach rechts ab und beginnen daher jeden Pfad mit seiner ersten oberen linken
- * Ecke. Bedingung (1) ist also trivialerweise erfüllt. Bedingung (2) folgt, da (x,y)
- * in der ersten Zeile des Pfades liegt und über (x,y) insbesondere keine gefüllten Module
- * desselben Pfades liegen können.
+ * Ecke. Die Bedingung ist also trivialerweise erfüllt.
  */
 function createPath(code,vEdges,x,y) {
     var x0 = x;
@@ -59,8 +53,8 @@ function createPath(code,vEdges,x,y) {
     }
     
     var hole = !ok(x,y); // beschreibt der Pfad ein Loch ?
-    if(ok(x-1,y)!=ok(x-1,y-1) || ok(x-1,y-1)!=ok(x,y-1) || ok(x,y-1)==hole) {
-        throw "Invalid arguments: Keine (echte) obere Ecke";
+    if(ok(x-1,y)!=ok(x,y-1) || ok(x,y-1)!=hole) {
+        throw "Invalid arguments: Keine obere linke Ecke";
     }
     
     // dir: 0=right,1=down,2=left,3=up
