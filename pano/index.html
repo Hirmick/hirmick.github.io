@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Küchenentwurf</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="pannellum/pannellum.css"/>
+        <meta property="og:title" content="Küchenentwurf" />
+        <meta property="og:type" content="video.movie" />
+        <meta property="og:url" content="https://hirmick.github.io/pano" />
+        <meta property="og:image" content="https://hirmick.github.io/pano/data/icon4.png" />
+        <script type="text/javascript" src="pannellum/pannellum.js"></script>
+        <style>
+            #panorama {
+                width: 600px;
+                height: 400px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="panorama"></div>
+        <script>
+            pannellum.viewer('panorama', {
+                "type": "equirectangular",
+                "panorama": "data/küche6.png"
+            });
+        </script>
+    </body>
+</html>
