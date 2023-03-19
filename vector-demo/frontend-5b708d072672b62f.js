@@ -320,6 +320,9 @@ async function load(module, imports) {
 function getImports() {
     const imports = {};
     imports.wbg = {};
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+        takeObject(arg0);
+    };
     imports.wbg.__wbindgen_cb_drop = function(arg0) {
         const obj = takeObject(arg0).original;
         if (obj.cnt-- == 1) {
@@ -328,9 +331,6 @@ function getImports() {
         }
         const ret = false;
         return ret;
-    };
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
-        takeObject(arg0);
     };
     imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
         const ret = getObject(arg0);
@@ -869,16 +869,16 @@ imports.wbg.__wbindgen_memory = function() {
     const ret = wasm.memory;
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper213 = function(arg0, arg1, arg2) {
-    const ret = makeClosure(arg0, arg1, 75, __wbg_adapter_18);
+imports.wbg.__wbindgen_closure_wrapper348 = function(arg0, arg1, arg2) {
+    const ret = makeClosure(arg0, arg1, 136, __wbg_adapter_18);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper408 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 181, __wbg_adapter_21);
+imports.wbg.__wbindgen_closure_wrapper457 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 201, __wbg_adapter_21);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper520 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 242, __wbg_adapter_24);
+imports.wbg.__wbindgen_closure_wrapper569 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 262, __wbg_adapter_24);
     return addHeapObject(ret);
 };
 imports['./snippets/dioxus-interpreter-js-1676574062e4c953/inline0.js'] = __wbg_star0;
@@ -917,7 +917,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('frontend-370dbaa93e56845_bg.wasm', import.meta.url);
+        input = new URL('frontend-5b708d072672b62f_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
