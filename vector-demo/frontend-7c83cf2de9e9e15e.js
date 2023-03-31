@@ -323,10 +323,6 @@ function getImports() {
     imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
         takeObject(arg0);
     };
-    imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
-        const ret = getObject(arg0);
-        return addHeapObject(ret);
-    };
     imports.wbg.__wbindgen_cb_drop = function(arg0) {
         const obj = takeObject(arg0).original;
         if (obj.cnt-- == 1) {
@@ -335,6 +331,10 @@ function getImports() {
         }
         const ret = false;
         return ret;
+    };
+    imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
+        const ret = getObject(arg0);
+        return addHeapObject(ret);
     };
     imports.wbg.__wbg_new_abda76e883ba8a5f = function() {
         const ret = new Error();
@@ -869,16 +869,16 @@ imports.wbg.__wbindgen_memory = function() {
     const ret = wasm.memory;
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper231 = function(arg0, arg1, arg2) {
-    const ret = makeClosure(arg0, arg1, 95, __wbg_adapter_18);
+imports.wbg.__wbindgen_closure_wrapper215 = function(arg0, arg1, arg2) {
+    const ret = makeClosure(arg0, arg1, 82, __wbg_adapter_18);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper567 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 273, __wbg_adapter_21);
+imports.wbg.__wbindgen_closure_wrapper539 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 253, __wbg_adapter_21);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper688 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 344, __wbg_adapter_24);
+imports.wbg.__wbindgen_closure_wrapper660 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 324, __wbg_adapter_24);
     return addHeapObject(ret);
 };
 imports['./snippets/dioxus-interpreter-js-1676574062e4c953/inline0.js'] = __wbg_star0;
@@ -917,7 +917,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('frontend-344f953f0f650e22_bg.wasm', import.meta.url);
+        input = new URL('frontend-7c83cf2de9e9e15e_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
