@@ -832,10 +832,6 @@ imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
 imports.wbg.__wbindgen_throw = function(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
-imports.wbg.__wbg_then_f7e06ee3c11698eb = function(arg0, arg1) {
-    const ret = getObject(arg0).then(getObject(arg1));
-    return addHeapObject(ret);
-};
 imports.wbg.__wbindgen_cb_drop = function(arg0) {
     const obj = takeObject(arg0).original;
     if (obj.cnt-- == 1) {
@@ -844,6 +840,10 @@ imports.wbg.__wbindgen_cb_drop = function(arg0) {
     }
     const ret = false;
     return ret;
+};
+imports.wbg.__wbg_then_f7e06ee3c11698eb = function(arg0, arg1) {
+    const ret = getObject(arg0).then(getObject(arg1));
+    return addHeapObject(ret);
 };
 imports.wbg.__wbg_resolve_53698b95aaf7fcf8 = function(arg0) {
     const ret = Promise.resolve(getObject(arg0));
@@ -922,16 +922,16 @@ imports.wbg.__wbg_instanceof_Node_cffd9c3b74760745 = function(arg0) {
     const ret = result;
     return ret;
 };
-imports.wbg.__wbindgen_closure_wrapper709 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 40, __wbg_adapter_20);
+imports.wbg.__wbindgen_closure_wrapper703 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 41, __wbg_adapter_20);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper728 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 40, __wbg_adapter_23);
+imports.wbg.__wbindgen_closure_wrapper721 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 41, __wbg_adapter_23);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper2097 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 88, __wbg_adapter_26);
+imports.wbg.__wbindgen_closure_wrapper2070 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 90, __wbg_adapter_26);
     return addHeapObject(ret);
 };
 imports['./snippets/dioxus-interpreter-js-cf9fba3dff59a7e7/inline0.js'] = __wbg_star0;
@@ -974,7 +974,7 @@ async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
     if (typeof input === 'undefined') {
-        input = new URL('rustmath-demo-1a25e9f6f038b4dd_bg.wasm', import.meta.url);
+        input = new URL('rustmath-demo-76eb5c08d200062d_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
